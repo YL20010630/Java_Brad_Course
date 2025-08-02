@@ -1,0 +1,182 @@
+--------------------------------------
+
+SELECT     --  選要顯示的欄位
+FROM       --  從哪個資料表查詢
+WHERE      --  篩選資料（每一筆 row）
+GROUP BY   --  分組（用來搭配聚合函數 like SUM, COUNT）
+HAVING     --  篩選分組後的結果（不能用 WHERE 的聚合條件）
+ORDER BY   --  排序輸出結果
+JOIN	   --  連接查詢，連接兩張表
+DISTINCT   --  去除重複資料
+
+--------------------------------------
+
+GROUP BY：用於某欄位內多個相同值合併計算
+HAVING：GROUP BY後代替WHERE使用
+
+--------------------------------------
+找出總銷售量低於200的商品
+SELECT ProductID, sum(Quantity) sum FROM `orderdetails`
+GROUP BY ProductID
+HAVING sum < 200
+
++-----------+------+
+| ProductID | sum  |
++-----------+------+
+|         9 |   95 |
+|        15 |  122 |
+|        37 |  125 |
+|        48 |  138 |
+|        67 |  184 |
++-----------+------+
+驗算
+SELECT ProductID, sum(Quantity) sum FROM `orderdetails`
+WHERE ProductID = 9
+--------------------------------------
+各商品的平均單價
+SELECT ProductID, AVG(UnitPrice) avg FROM `orderdetails`
+GROUP BY ProductID
+ORDER BY ProductID
+--------------------------------------
+找到下單次數超過20次的顧客名
+SELECT CustomerID, count(OrderID) count FROM `orders`
+GROUP BY CustomerID
+HAVING count > 20
+ORDER BY count DESC
+--------------------------------------
+找到有訂單日期為1997年的公司名
+SELECT CompanyName FROM `customers` 
+WHERE CustomerID IN
+(
+    SELECT CustomerID FROM orders
+    WHERE OrderDate BETWEEN '1997-01-01' AND '1997-12-31'
+)
+
+也可以用模糊查詢，但沒有between精準
+ WHERE OrderDate LIKE '1997%'
+--------------------------------------
+找到聯絡人姓名為此的產品及供應商ID
+Charlotte Cooper, Mayumi Ohno
+
+SELECT ProductName, SupplierID FROM `products` 
+WHERE SupplierID IN
+(
+	SELECT SupplierID FROM suppliers
+    WHERE ContactName IN ('Charlotte Cooper')
+)
+--------------------------------------
+
+子類別，XXX部分要相同，代表連接的欄位
+WHERE XXX IN
+(SELECT XXX FROM a WHERE B)
+
+JOIN ON效果較好
+
+SELECT *
+FROM orders o
+JOIN orderdetails od ON o.OrderID = od.OrderID
+從 orders 和 orderdetails 兩張表中，把符合條件的資料對應起來（有對應的才出現）
+把兩張表連接起來，可以查詢兩邊資料
+
+SELECT *
+FROM orders
+WHERE OrderID IN (SELECT OrderID FROM orderdetails)
+從 orders 表中，只留下那些 OrderID 有出現在 orderdetails 表裡的資料。
+查詢主表中符合條件的資料，只能查主表欄位
+
+--------------------------------------
+找到海產類產品
+SELECT ProductName FROM `products` 
+WHERE CategoryID = 
+(SELECT CategoryID FROM categories WHERE CategoryName = 'Seafood')
+
+這裡不用WHERE CategoryID IN
+是因為 = 用來比對單一值
+IN 用來比較多個值
+每個CategoryID欄位的值在categories表裡都不重複
+--------------------------------------
+找到海產供應商
+SELECT CompanyName, ContactName, Phone
+FROM suppliers
+WHERE SupplierID IN
+(
+	SELECT SupplierID FROM products
+	WHERE CategoryID = 
+	(
+		SELECT CategoryID FROM categories
+		WHERE CategoryName = 'Seafood'
+	)
+)
+--------------------------------------
+找出單一商品最高價
+SELECT DISTINCT od.ProductID, od.UnitPrice max FROM `orderdetails` od
+WHERE od.UnitPrice = 
+(
+	SELECT MAX(UnitPrice)
+    FROM orderdetails od2
+    WHERE od.ProductID = od2.ProductID
+)
+72 34.8000
+--------------------------------------
+業績排行榜
+SELECT o.EmployeeID, e.FirstName, e.LastName, SUM(od.UnitPrice*od.Quantity) sum FROM `orders` o
+JOIN orderdetails od ON o.OrderID = od.OrderID
+JOIN employees e ON o.EmployeeID = e.EmployeeID
+GROUP BY o.EmployeeID
+ORDER BY sum desc
+
+5 : 75567.7500
+--------------------------------------
+某員工的銷售額
+SELECT SUM(UnitPrice*Quantity) FROM `orderdetails` 
+WHERE OrderID IN
+(
+	SELECT OrderID FROM orders
+    WHERE EmployeeID = 5
+)
+--------------------------------------
+商品銷售排行榜
+SELECT 
+  @rank := @rank + 1 AS Rank,
+  t.ProductName,
+  t.AvgPrice,
+  t.TotalQuantity,
+  t.TotalSales
+FROM (
+  SELECT 
+    p.ProductName, 
+    AVG(p.UnitPrice) AS AvgPrice,
+    SUM(od.Quantity) AS TotalQuantity,
+    SUM(p.UnitPrice * od.Quantity) AS TotalSales
+  FROM orderdetails od
+  JOIN products p ON od.ProductID = p.ProductID
+  GROUP BY p.ProductName
+  ORDER BY TotalSales DESC
+) t, (SELECT @rank := 0) r;
+
+--------------------------------------
+類別銷售排行榜
+SELECT 
+  @rank := @rank + 1 AS Rank,
+  t.CategoryName,
+  t.TotalQuantity,
+  t.TotalSales
+FROM (
+  SELECT 
+    c.CategoryName,
+    SUM(od.Quantity) AS TotalQuantity,
+    SUM(od.Quantity * od.UnitPrice) AS TotalSales
+  FROM orderdetails od
+  JOIN products p ON od.ProductID = p.ProductID
+  JOIN categories c ON p.CategoryID = c.CategoryID
+  GROUP BY c.CategoryName
+  ORDER BY TotalSales DESC
+) t, (SELECT @rank := 0) r;
+
+
+
+
+
+
+
+

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>page5.html</title>
+	<style>
+			table {
+				border-collapse: collapse;
+				width: 80%;
+				margin: 2px auto;
+			}
+			td {
+				border: 1px solid #444;
+				padding: 1px 2px;
+				text-align: center
+			}
+			.odd-row{
+				background-color: pink
+			}
+			.even-row{
+				background-color: yellow
+			}
+		</style>
+	</head>
+	<body>
+		<table>
+			<tbody>
+				<tr th:each="area, status : ${areas}" th:classappend="${status.odd ? 'odd-row' : 'even-row'}">
+					<td th:text="${status.index}">index</td>
+					<td th:text="${status.count}">index</td>
+					<td th:text="${status.size}">index</td>
+					<td th:text="${status.first}">index</td>
+					<td th:text="${status.last}">index</td>
+					<td th:text="${area}">Name</td>
+				</tr>
+			</tbody>
+		</table>		
+	
+	
+	</body>
+</html>

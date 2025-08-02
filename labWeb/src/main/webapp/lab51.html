@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+	<!-- 
+		連結lab52.jsp、labUtils.java
+		使用者輸入一個最大值 max，前端透過三種方式 (load, $.get, $.post) 
+		向伺服器發送請求，然後後端隨機產生一個 1 ~ max 的整數顯示在畫面上
+	 -->
+	
+	
+		<meta charset="UTF-8">
+		<title>lab51.html</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		
+		<script type="text/javascript">
+		
+			<!-- 使用 .load() 方法（預設是 GET） -->
+			function test1(){
+				<!-- 把使用者輸入的 max 直接附在網址上 -->
+				let url = 'lab52.jsp?max=' + $('#max').val();
+				<!-- .load(url)送出 GET 請求，並將伺服器回傳的文字塞進 #id1 裡 -->
+				$('#id1').load(url);
+			}
+			
+			<!-- 使用 $.get() 方法（明確的 GET 請求） -->
+			function test2(){
+				let url = 'lab52.jsp?max=' + $('#max').val();
+				$.get(url,function(data,status){
+					if (status=='success'){
+						$('#id1').html(data);		
+					}
+				});
+			}
+			
+			<!-- 使用 $.post() 方法 -->
+			<!-- $.post(網址url, 物件{"max": 值}) -->
+			function test3(){
+				let url = 'lab52.jsp?max=' + $('#max').val();
+				<!-- 
+					用POST發送資料，不是加在網址，而是放在request body裡
+					後端的 if(request.getMethod().equals("POST")) 就會成立 → 執行亂數產生
+				-->
+				$.post(url,{
+					"max": $('#max').val()
+				},function(data,status){
+					if (status=='success'){
+						$('#id1').html(data);		
+					}					
+				});
+			}
+			
+			function test4(){
+				let url = 'lab52.jsp';
+				$.ajax(
+					url: url,
+					method:'post'
+					data: {
+						$('#max').val()
+				},
+				success: function(data){
+						$('#id1').html(data);							
+				}
+
+			
+			<!-- function(data, status) { ... } 是一個callback（回呼函式）就是：等伺服器處理完回應後要執行的函式
+			data 是伺服器回應回來的結果（例如隨機數字）。
+			status 是請求是否成功（通常是 "success" 或 "error"）
+			-->
+			<!-- $('#max').val() 是抓取 <input id="max"> 裡使用者輸入的值  -->
+		
+		</script>
+		
+	</head>
+	<body>
+		Lottery: <span id="id1"></span><hr />
+		<input type="number" id="max" /><hr />
+		<input type="button" onclick="test1()" value="Test1" />
+		<input type="button" onclick="test2()" value="Test2" />
+		<input type="button" onclick="test3()" value="Test3" />
+		<input type="button" onclick="test4()" value="Test4" />
+	</body>
+</html>

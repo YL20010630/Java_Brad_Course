@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+
+<body>
+    <div id="main" style="width: 600px;height:400px;"></div>
+    <script type="text/javascript">
+        // 使用 ECharts 初始化圖表物件，綁定 id="main" 的 div
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定圖表的配置項和數據
+        option1 = {
+            title: {
+                text: '營收趨勢'
+            },
+            //  當滑鼠移到 X 軸上時顯示所有 series 的 tooltip
+            tooltip: {
+                trigger: 'axis'
+            },
+            // 設定圖例（legend），用來顯示各條線的名稱
+            legend: {
+                data: ['2024', '2023', '2022', '2021', '2020']
+            },
+            // 設定圖表四周邊距，containLabel: true 表示不讓標籤被擋到
+            grid: {
+                left: '3%',
+                right: '4%',
+                bottom: '3%',
+                containLabel: true
+            },
+            // 加入工具列，讓使用者可以將圖表另存為圖片
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            // 設定 X 軸為分類類型（category），並設定十二個月為橫軸
+            xAxis: {
+                type: 'category',
+                // boundaryGap: false 表示折線會貼齊左右邊界
+                boundaryGap: false,
+                data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月']
+            },
+            // 設定 Y 軸為數值軸，會自動根據資料算出刻度
+            yAxis: {
+                type: 'value'
+            },
+            // series 是資料主體
+            series: [
+                {
+                    name: '2024',
+                    // type: 'line' 表示是折線圖
+                    type: 'line',
+                    // stack: 'Total' 表示要做「堆疊折線圖」，會把各線的 y 值加總堆疊
+                    stack: 'Total',
+                    data: [90, 85, 110, 130, 180, 250, 300, 280, 240, 180, 150, 130]
+                },
+                {
+                    name: '2023',
+                    type: 'line',
+                    stack: 'Total',
+                    data: [75, 70, 72, 85, 90, 110, 150, 140, 120, 100, 95, 90]
+                },
+                {
+                    name: '2022',
+                    type: 'line',
+                    stack: 'Total',
+                    data: [80, 78, 	95, 100, 130, 170, 200, 195, 150, 120, 100, 85]
+                }
+            ]
+        };
+
+        // 把上面設定好的圖表選項套用到圖表實例上，畫出圖表。
+        myChart.setOption(option1);
+        
+       
+        option2 = {
+			  //  tooltip：滑鼠提示設定
+        		  tooltip: {
+        		    trigger: 'axis',			// 移動到 x 軸某一點時，同軸的資料會同時顯示
+        		    axisPointer: {
+        		      type: 'cross',			// 顯示十字座標線
+        		      crossStyle: {
+        		        color: '#999'		// 十字線顏色
+        		      }
+        		    }
+        		  },
+        		//  tooltip：右上角功能列
+        		  toolbox: {
+        		    feature: {
+        		      dataView: { show: true, readOnly: false },
+        		      magicType: { show: true, type: ['line', 'bar'] },
+        		      restore: { show: true },
+        		      saveAsImage: { show: true }
+        		    }
+        		  },
+        		  //  legend：圖例
+        		  legend: {
+        		    data: ['Evaporation', 'Precipitation', 'Temperature']
+        		  },
+        		//  xAxis：X 軸設定
+        		  xAxis: [
+        		    {
+        		      type: 'category',
+        		      data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        		      axisPointer: {
+        		        type: 'shadow'
+        		      }
+        		    }
+        		  ],
+        		  //  yAxis：Y 軸設定
+        		  yAxis: [
+        		    {
+        		      type: 'value',
+        		      name: 'Precipitation',		// 左邊
+        		      min: 0,
+        		      max: 250,
+        		      interval: 50,
+        		      axisLabel: {
+        		        formatter: '{value} ml'
+        		      }
+        		    },
+        		    {
+        		      type: 'value',
+        		      name: 'Temperature',		// 右邊
+        		      min: 0,
+        		      max: 25,
+        		      interval: 5,
+        		      axisLabel: {
+        		        formatter: '{value} °C'
+        		      }
+        		    }
+        		  ],
+        		  // series：資料序列
+        		  series: [
+        		    {
+        		      name: 'Evaporation',
+        		      type: 'bar',
+        		      tooltip: {
+					// tooltip.valueFormatter 是滑鼠提示時自定義數值格式
+        		        valueFormatter: function (value) {
+        		          return value + ' ml';
+        		        }
+        		      },
+        		      data: [
+        		        2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3
+        		      ]
+        		    },
+        		    {
+        		      name: 'Precipitation',
+        		      type: 'bar',
+        		      tooltip: {
+        		        valueFormatter: function (value) {
+        		          return value + ' ml';
+        		        }
+        		      },
+        		      data: [
+        		        2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
+        		      ]
+        		    },
+        		    {
+        		      name: 'Temperature',
+        		      type: 'line',
+        		      // yAxisIndex: 1 指的是使用第 2 組 y 軸（陣列從 0 開始）
+        		      yAxisIndex: 1,
+        		      tooltip: {
+        		        valueFormatter: function (value) {
+        		          return value + ' °C';
+        		        }
+        		      },
+        		      data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+        		    }
+        		  ]
+        		};
+        
+        
+    </script>
+</body>
+
+</html>

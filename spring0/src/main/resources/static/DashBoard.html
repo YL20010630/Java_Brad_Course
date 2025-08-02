@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <title>數據分析儀表板</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #f5f5f5;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            height: 100vh;
+        }
+
+        .sidebar {
+            background: #000;
+            color: #fff;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar button {
+            background: none;
+            color: #fff;
+            border: none;
+            margin: 10px 0;
+            font-size: 18px;
+            text-align: left;
+        }
+
+        .main {
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .card-row {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            box-shadow: 2px 2px 10px #ccc;
+            border-radius: 8px;
+            width: 150px;
+            text-align: center;
+        }
+
+        .chart {
+            background: white;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 2px 2px 10px #ccc;
+            padding: 10px;
+        }
+
+        #mainChart,
+        #branchChart {
+            height: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard">
+        <div class="sidebar">
+            <button>返回</button>
+            <button>後台系統</button>
+            <button>商品管理</button>
+            <button>優惠活動</button>
+            <button>員工資料</button>
+            <button>排班表</button>
+            <button>會員管理</button>
+            <button style="background:#888">數據分析</button>
+        </div>
+        <div class="main">
+            <div class="card-row">
+                <div class="card">356.8 K<br><small>總營業額</small></div>
+                <div class="card">256.6 K<br><small>總利潤</small></div>
+                <div class="card">59.3 K<br><small>總訂單數</small></div>
+                <div class="card" style="color:red;">+12.4%<br><small>成長率</small></div>
+            </div>
+
+            <div class="chart">
+                <h3>營收趨勢</h3>
+                <div id="mainChart"></div>
+            </div>
+
+            <div class="chart">
+                <h3>分店營收</h3>
+                <div id="branchChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var mainChart = echarts.init(document.getElementById('mainChart'));
+        mainChart.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['2022', '2023', '2024'] },
+            xAxis: { type: 'category', data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'] },
+            yAxis: { type: 'value' },
+            series: [
+                { name: '2022', type: 'line', data: [50, 60, 70, 80, 90, 100, 120, 110, 90, 80, 70, 60], smooth: true },
+                { name: '2023', type: 'line', data: [60, 65, 80, 95, 110, 130, 140, 120, 100, 90, 80, 70], smooth: true },
+                { name: '2024', type: 'line', data: [70, 75, 90, 110, 130, 150, 170, 160, 140, 120, 100, 90], smooth: true }
+            ]
+        });
+
+        var branchChart = echarts.init(document.getElementById('branchChart'));
+        branchChart.setOption({
+            tooltip: { trigger: 'axis' },
+            legend: { data: ['成本', '營業額', '利潤率'] },
+            xAxis: { type: 'category', data: ['台北分店', '台中分店', '台南分店'] },
+            yAxis: [
+                { type: 'value', name: '金額' },
+                { type: 'value', name: '利潤率 (%)' }
+            ],
+            series: [
+                { name: '成本', type: 'bar', data: [10, 7, 3] },
+                { name: '營業額', type: 'bar', data: [15, 18, 5] },
+                { name: '利潤率', type: 'line', yAxisIndex: 1, data: [33, 61, 40] }
+            ]
+        });
+    </script>
+</body>
+
+</html>

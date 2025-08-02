@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>營收圖表</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+
+<body>
+    <h2>營收圖表</h2>
+
+    <label for="typeSelect">選擇類型：</label>
+    <select id="typeSelect" onchange="loadChart(this.value)">
+        <option value="month">每月</option>
+        <option value="year">每年</option>
+    </select>
+
+    <div id="main" style="width: 600px; height: 400px;"></div>
+
+    <script>
+        const myChart = echarts.init(document.getElementById('main'));
+
+        function loadChart(type) {
+            fetch(`/api/sales?type=${type}`)
+                .then(res => res.json())
+                .then(data => {
+                    const option = {
+                        title: { text: type === 'month' ? '每月營收' : '年度營收' },
+                        tooltip: { trigger: 'axis' },
+                        xAxis: { type: 'category', data: data.labels },
+                        yAxis: { type: 'value' },
+                        series: [{
+                            name: '營收',
+                            type: 'line',
+                            data: data.values
+                        }]
+                    };
+                    myChart.setOption(option);
+                })
+                .catch(err => console.error("錯誤：", err));
+        }
+
+        // 預設載入「每月」
+        window.onload = function () {
+            document.getElementById("typeSelect").value = "month";
+            loadChart("month");
+        };
+    </script>
+</body>
+
+</html>

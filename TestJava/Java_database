@@ -1,0 +1,13 @@
+命令提示字元
+
+cd 路徑複製貼上
+mysql -u -root -p
+密碼：root
+
+exit可以離開
+mysql -u -root -p  再次進入
+show databases;
+use testdb;
+CREATE TABLE t1 (id int, f1 varchar(100));    // 創表，裡面有哪些東西
+SHOW TABLES;
+DESC t1;    // DESC描述

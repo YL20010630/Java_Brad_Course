@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Chart Demo</title>
+  <!-- 載入 ECharts CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script>
+</head>
+<body>
+  <!-- 放圖表的 DOM -->
+  <div id="main" style="width: 600px;height:400px;"></div>
+
+  <script>
+    // 初始化圖表
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 向後端請求資料
+    fetch("/api/chart-data")
+      .then(res => res.json())
+      .then(data => {
+    	  	console.log("收到資料：", data); // ← 這行會印出結果
+        // 設定圖表內容
+        myChart.setOption({
+          title: {
+            text: '後端資料圖表'
+          },
+          tooltip: {},
+          xAxis: {
+            data: data.labels
+          },
+          yAxis: {},
+          series: [{
+            name: '數值',
+            type: 'bar',
+            data: data.values
+          }]
+        });
+      });
+  </script>
+</body>
+</html>

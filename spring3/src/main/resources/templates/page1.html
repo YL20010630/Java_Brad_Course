@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>page1.html</title>
+	</head>
+	<body>
+	<h1>Page1</h1>
+	<p th:text="'Hello, ' + ${name}">Hello, World</p>
+	<hr />
+	<h2 th:text="${companyName}">呈現公司名稱</h2>
+	<h3 th:text="${companyTel}">呈現公司名稱</h3>
+	<h4 th:text="${now}">呈現現在時間</h4>
+	<hr />
+	<div th:text="${user.id} ?: '訪客' ">ID</div>
+	<div th:text="${user.name}">User Name</div>
+	<div th:text="${user.age >= 18 ? '成年' : '未成年'}">是否成年</div>
+	<div th:text="${user.gender ? '男生' : '女生'}">性別</div>
+	</body>
+</html>

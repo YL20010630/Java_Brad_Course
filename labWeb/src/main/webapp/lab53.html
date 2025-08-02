@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+	<!-- 連結lab54.jsp -->
+	
+		<meta charset="UTF-8">
+		<title>Insert title here</title>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+		<script type="text/javascript">
+			function search(){
+				$.ajax({
+					url: 'lab54.jsp',
+					method: 'get',
+					data: {
+						"orderId": $('#orderId').val()
+					},
+					
+					// AJAX 成功之後的回呼函式 (callback) ，也就是伺服器回傳成功就執行函式
+					success: function(order){
+					// order 是伺服器回傳的 JSON 物件
+						console.log(order);
+						$('#employee').html(order.employee);
+						$('#customer').html(order.customer);
+						$('#total').html(order.total);
+						
+						$('#table').empty();
+						
+						$('#table').append(
+								'<tr>'+
+									'<th>序號</th>'+
+									'<th>商品ID</th>'+
+									'<th>商品名稱</th>'+
+									'<th>價格</th>'+
+									'<th>數量</th>'+
+									'<th>總額</th>'+
+								'</tr>');
+						
+						// .each逐筆處理 JSON 陣列中的每個物件
+						$(order.details).each(
+							// i: 當前明細的索引 (從 0 開始)
+							// 每個 row 是一項商品明細
+							function(i,row){
+								$('#table').append(
+									'<tr>' +
+										'<td>' + (i+1) +'</td>' +
+										'<td>' + row.pid +'</td>' +
+										'<td>' + row.pname +'</td>' +
+										'<td>' + row.price +'</td>' +
+										'<td>' + row.qty +'</td>' +
+										'<td>' + row.sum +'</td>' +
+									'</tr>'
+								);								
+							}
+						);
+						
+					}
+				});
+			}
+		</script>
+	<body>
+		<h1>Lab Big Company</h1>
+		<hr />
+		Order ID: <input id="orderId" />
+		<input type="button" onclick="search()" value="Search" />
+		<hr />
+		Employee: <span id="employee"></span><br />
+		Customer: <span id="customer"></span><br />
+		<hr />
+		<table border="1" width="100%" id="table"></table>
+		<hr />
+		<div>Total: <span id="total"></span></div>	
+	</body>
+</html>

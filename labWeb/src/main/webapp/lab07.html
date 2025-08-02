@@ -1,0 +1,31 @@
+<meta charset="UTF-8" />
+
+<!-- 
+用method="post"因為用GET表單資料會出現在網址列，POST的話表單資料藏在requestbody 裡，不會出現在網址中，顯示的差異，密碼、個資、表單適合用POST
+GET 受限於 URL 長度，POST 幾乎沒限制，可送大量資料
+
+GET：拿資料（read），POST：提交新資料（create），PUT：更新資料（update），DELETE：刪除資料（delete）
+doGet() 用來處理查詢、顯示頁面，doPost() 處理資料儲存、帳號送出等動作
+ -->
+
+<form action="lab07" method="post" >
+	Account: <input name="account" /><br />
+	Password: <input type="password" name="passwd" /><br />
+	Name: <input name="name" /><br />
+<!--	radio 單選 -->
+	Gender: 
+	<input type="radio" name="gender" value="m" checked />Male
+	<input type="radio" name="gender" value="f" />Female<br />
+<!--	checkbox 複選 -->
+	興趣:
+	<input type="checkbox" name="interest" value="1" />打電腦
+	<input type="checkbox" name="interest" value="2" />打電玩
+	<input type="checkbox" name="interest" value="3" />打籃球<br />
+	<input type="checkbox" name="interest" value="4" />打麻將
+	<input type="checkbox" name="interest" value="5" />打毛線
+	<input type="checkbox" name="interest" value="6" />打小孩<br />
+	
+	Birthday: <input type="date" name="birthday" /><br />
+	
+	<input type="submit" value="Register" />
+</form>
